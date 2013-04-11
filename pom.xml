@@ -7,9 +7,11 @@
 
 	<modules>
 		<module>library</module>
+		<module>sample</module>
 	</modules>
 
 	<properties>
+		<androidannotations.version>2.7.1</androidannotations.version>
 		<android.platform>14</android.platform>
 		<java.version>1.6</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -39,6 +41,19 @@
 				<groupId>com.google.android</groupId>
 				<artifactId>support-v4</artifactId>
 				<version>${android-support.version}</version>
+			</dependency>
+
+			<!-- AndroidAnnotations -->
+			<dependency>
+				<groupId>com.googlecode.androidannotations</groupId>
+				<artifactId>androidannotations</artifactId>
+				<version>${androidannotations.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.googlecode.androidannotations</groupId>
+				<artifactId>androidannotations-api</artifactId>
+				<version>${androidannotations.version}</version>
 			</dependency>
 
 			<!-- Jodatime -->
