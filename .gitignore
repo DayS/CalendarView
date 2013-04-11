@@ -15,6 +15,7 @@ lint.xml
 .classpath
 .settings
 .checkstyle
+.apt_generated
 
 #IntelliJ IDEA
 .idea
