@@ -73,6 +73,10 @@ public class CalendarGridView extends GridLayout {
 	public int getFinalRowCount() {
 		return showExtraRow ? 6 : 5;
 	}
+	
+	public YearMonth getCurrentMonth() {
+		return currentMonth;
+	}
 
 	public void setCurrentMonth(YearMonth currentMonth) {
 		this.currentMonth = currentMonth;

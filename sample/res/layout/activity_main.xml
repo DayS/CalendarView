@@ -15,6 +15,14 @@
         android:layout_alignParentLeft="true"
         android:text="@string/previous" />
 
+    <TextView
+        android:id="@+id/titleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/previousButton"
+        android:layout_centerHorizontal="true"
+        android:textSize="22sp" />
+
     <Button
         android:id="@+id/nextButton"
         android:layout_width="wrap_content"

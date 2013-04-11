@@ -3,6 +3,7 @@ package fr.days.calendarview.sample;
 import org.joda.time.YearMonth;
 
 import android.app.Activity;
+import android.widget.TextView;
 
 import com.googlecode.androidannotations.annotations.AfterViews;
 import com.googlecode.androidannotations.annotations.Click;
@@ -17,24 +18,27 @@ public class MainActivity extends Activity {
 	@ViewById
 	CalendarView calendarView;
 
-	private YearMonth currentMonth;
+	@ViewById
+	TextView titleView;
 
 	@AfterViews
 	void init() {
-		currentMonth = YearMonth.now();
-		calendarView.setCurrentMonth(currentMonth);
+		setCurrentMonth(YearMonth.now());
 	}
 
 	@Click
 	void previousButtonClicked() {
-		currentMonth = currentMonth.minusMonths(1);
-		calendarView.setCurrentMonth(currentMonth);
+		setCurrentMonth(calendarView.getCurrentMonth().minusMonths(1));
 	}
 
 	@Click
 	void nextButtonClicked() {
-		currentMonth = currentMonth.plusMonths(1);
+		setCurrentMonth(calendarView.getCurrentMonth().plusMonths(1));
+	}
+
+	void setCurrentMonth(YearMonth currentMonth) {
 		calendarView.setCurrentMonth(currentMonth);
+		titleView.setText(currentMonth.monthOfYear().getAsText());
 	}
 
 }

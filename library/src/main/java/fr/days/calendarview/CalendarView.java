@@ -46,6 +46,10 @@ public class CalendarView extends LinearLayout {
 	public void setOnLongClickListener(OnLongClickListener l) {
 		gridLayout.setOnLongClickListener(l);
 	}
+	
+	public YearMonth getCurrentMonth() {
+		return gridLayout.getCurrentMonth();
+	}
 
 	public void setCurrentMonth(YearMonth currentMonth) {
 		gridLayout.setCurrentMonth(currentMonth);
