@@ -77,14 +77,16 @@ public class CalendarGridView extends GridLayout {
 	public void setCurrentMonth(YearMonth currentMonth) {
 		this.currentMonth = currentMonth;
 
+		LogWrapper.debug("set current month to " + currentMonth.toString());
+
 		LocalDate firstDayOfMonth = currentMonth.toLocalDate(1);
 		firstDayOfMonthWeekIndex = firstDayOfMonth.getDayOfWeek();
 		firstDayOfView = firstDayOfMonth.minusDays(firstDayOfMonthWeekIndex - 1);
 
 		showExtraRow = firstDayOfMonth.dayOfMonth().getMaximumValue() + firstDayOfMonthWeekIndex - 1 > 35;
 
-		resetWeeks();
 		requestLayout();
+		configureCells();
 	}
 
 	public void setShowWeekends(boolean showWeekends) {
@@ -107,12 +109,13 @@ public class CalendarGridView extends GridLayout {
 		}
 	}
 
-	private void resetWeeks() {
+	private void configureCells() {
 		LogWrapper.debug("CalendarView : resetWeeks");
 
 		for (int i = 0; i < getChildCount(); i++) {
 			CalendarCellView calendarCellView = (CalendarCellView) getChildAt(i);
 			calendarCellView.setDate(currentMonth, firstDayOfView.plusDays(i));
+			calendarCellView.invalidate();
 		}
 	}
 
