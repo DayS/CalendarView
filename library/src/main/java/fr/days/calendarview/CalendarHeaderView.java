@@ -28,6 +28,8 @@ public class CalendarHeaderView extends View {
 	private float bottomMargin;
 	private float rightMargin;
 
+	private boolean showWeekends;
+
 	public CalendarHeaderView(Context context) {
 		super(context);
 		init();
@@ -59,7 +61,7 @@ public class CalendarHeaderView extends View {
 		width = getWidth();
 		height = getHeight();
 
-		cellWidth = width / 7;
+		cellWidth = width / numberOfDaysToShow();
 	}
 
 	@Override
@@ -68,6 +70,15 @@ public class CalendarHeaderView extends View {
 
 		drawBackground(canvas);
 		drawText(canvas);
+	}
+
+	public void setShowWeekends(boolean showWeekends) {
+		this.showWeekends = showWeekends;
+		requestLayout();
+	}
+
+	private int numberOfDaysToShow() {
+		return showWeekends ? 7 : 5;
 	}
 
 	private void drawBackground(Canvas canvas) {
@@ -81,7 +92,7 @@ public class CalendarHeaderView extends View {
 		paint.setTextAlign(Align.RIGHT);
 		paint.setTextSize(textSize);
 
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < numberOfDaysToShow(); i++) {
 			canvas.drawText(SHORT_WEEKDAYS[i], cellWidth * (i + 1) - rightMargin, height - bottomMargin, paint);
 		}
 	}
