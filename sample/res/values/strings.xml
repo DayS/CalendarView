@@ -4,5 +4,7 @@
     <string name="app_name">CalendarView-Sample</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
+    <string name="previous">&lt;&lt;&lt;</string>
+    <string name="next">>>></string>
 
 </resources>
