@@ -31,7 +31,7 @@ public class CalendarGridView extends GridLayout {
 
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		LogWrapper.debug("CalendarView : onSizeChanged: :" + w + ", " + h);
+		LogWrapper.trace("CalendarView : onSizeChanged(%d, %d, %d, %d)", w, h, oldw, oldh);
 
 		int cellWidth = (int) (getWidth() / getFinalColumnCount());
 		int cellHeight = (int) (getHeight() / getFinalRowCount());
@@ -73,7 +73,7 @@ public class CalendarGridView extends GridLayout {
 	public int getFinalRowCount() {
 		return showExtraRow ? 6 : 5;
 	}
-	
+
 	public YearMonth getCurrentMonth() {
 		return currentMonth;
 	}
@@ -81,7 +81,7 @@ public class CalendarGridView extends GridLayout {
 	public void setCurrentMonth(YearMonth currentMonth) {
 		this.currentMonth = currentMonth;
 
-		LogWrapper.debug("set current month to " + currentMonth.toString());
+		LogWrapper.debug("set current month to %s", currentMonth.toString());
 
 		LocalDate firstDayOfMonth = currentMonth.toLocalDate(1);
 		firstDayOfMonthWeekIndex = firstDayOfMonth.getDayOfWeek();

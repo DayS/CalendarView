@@ -49,14 +49,14 @@ public class CalendarHeaderView extends View {
 
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-		LogWrapper.debug("CalendarHeaderView : onMeasure(" + MeasureSpec.toString(widthMeasureSpec) + "," + MeasureSpec.toString(heightMeasureSpec) + ")");
+		LogWrapper.trace("CalendarHeaderView : onMeasure(%s, %s)", MeasureSpec.toString(widthMeasureSpec), MeasureSpec.toString(heightMeasureSpec));
 
 		setMeasuredDimension(MeasureSpec.getSize(widthMeasureSpec), (int) (textSize + topMargin + bottomMargin));
 	}
 
 	@Override
 	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		LogWrapper.debug("CalendarHeaderView : onSizeChanged: :" + w + ", " + h);
+		LogWrapper.trace("CalendarHeaderView : onSizeChanged(%d, %d, %d, %d)", w, h, oldw, oldh);
 
 		width = getWidth();
 		height = getHeight();
@@ -66,8 +66,6 @@ public class CalendarHeaderView extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		LogWrapper.debug("CalendarHeaderView : onDraw()");
-
 		drawBackground(canvas);
 		drawText(canvas);
 	}
