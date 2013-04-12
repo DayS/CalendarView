@@ -1,5 +1,7 @@
 package fr.days.calendarview;
 
+import org.joda.time.LocalDate;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,9 +12,6 @@ import android.util.TypedValue;
 import android.view.View;
 
 public class CalendarHeaderView extends View {
-
-	// TODO: Hard-coded for now. Try to fix it
-	private static final String[] SHORT_WEEKDAYS = new String[] { "LUN.", "MAR.", "MER.", "JEU.", "VEN.", "SAM.", "DIM." };
 
 	private final Paint paint = new Paint();
 
@@ -28,6 +27,7 @@ public class CalendarHeaderView extends View {
 	private float bottomMargin;
 	private float rightMargin;
 
+	private String[] shortWeekdays = new String[7];
 	private boolean showWeekends;
 
 	public CalendarHeaderView(Context context) {
@@ -36,6 +36,11 @@ public class CalendarHeaderView extends View {
 	}
 
 	private void init() {
+		LocalDate now = LocalDate.now();
+		for (int i = 0; i < 7; i++) {
+			shortWeekdays[i] = now.withDayOfWeek(i + 1).dayOfWeek().getAsShortText().toUpperCase();
+		}
+
 		textSize = convertDpiToPixels(14);
 		topMargin = convertDpiToPixels(3);
 		bottomMargin = convertDpiToPixels(3);
@@ -91,7 +96,7 @@ public class CalendarHeaderView extends View {
 		paint.setTextSize(textSize);
 
 		for (int i = 0; i < numberOfDaysToShow(); i++) {
-			canvas.drawText(SHORT_WEEKDAYS[i], cellWidth * (i + 1) - rightMargin, height - bottomMargin, paint);
+			canvas.drawText(shortWeekdays[i], cellWidth * (i + 1) - rightMargin, height - bottomMargin, paint);
 		}
 	}
 
