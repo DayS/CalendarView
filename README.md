@@ -2,6 +2,8 @@
 
 This library is yet another calendar view for Android. It provide a widget to show a single month at a time, so the use with a ViewPager is much easier than showing a whole year in a ScrollView.
 
+![Screenshot](calendarView.png)
+
 ## Download
 
 This library is not in Maven central yet. However, you can clone this repository, then compile and deploy it in your local repository with `mvn clean install`.
