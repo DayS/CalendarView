@@ -6,6 +6,8 @@ import org.joda.time.YearMonth;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
+import fr.days.calendarview.listeners.OnDayClickListener;
+import fr.days.calendarview.listeners.OnDayLongClickListener;
 
 public class CalendarView extends LinearLayout {
 
@@ -37,14 +39,12 @@ public class CalendarView extends LinearLayout {
 		addView(gridLayout, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
 	}
 
-	@Override
-	public void setOnClickListener(OnClickListener l) {
-		gridLayout.setOnClickListener(l);
+	public void setOnDayClickListener(OnDayClickListener l) {
+		gridLayout.setOnDayClickListener(l);
 	}
 
-	@Override
-	public void setOnLongClickListener(OnLongClickListener l) {
-		gridLayout.setOnLongClickListener(l);
+	public void setOnDayLongClickListener(OnDayLongClickListener l) {
+		gridLayout.setOnDayLongClickListener(l);
 	}
 
 	public YearMonth getCurrentMonth() {

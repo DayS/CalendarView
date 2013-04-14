@@ -80,15 +80,18 @@ public class CalendarCellView extends View implements OnTouchListener {
 	public boolean onTouch(View v, MotionEvent event) {
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN:
+			LogWrapper.trace("Action down");
 			highlighted = true;
 			invalidate();
-			return false;
+			return !(isClickable() || isLongClickable());
 		case MotionEvent.ACTION_UP:
 		case MotionEvent.ACTION_CANCEL:
+			LogWrapper.trace("Action up");
 			highlighted = false;
 			invalidate();
-			return false;
+			return !(isClickable() || isLongClickable());
 		}
+		LogWrapper.trace("action %d", event.getAction());
 		return false;
 	}
 

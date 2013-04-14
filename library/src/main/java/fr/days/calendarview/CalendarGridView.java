@@ -9,9 +9,13 @@ import org.joda.time.YearMonth;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import fr.days.calendarview.listeners.OnDayClickListener;
+import fr.days.calendarview.listeners.OnDayLongClickListener;
 
-public class CalendarGridView extends ViewGroup {
+public class CalendarGridView extends ViewGroup implements OnClickListener, OnLongClickListener {
 
 	private static final int DAYS_COUNT = 35;
 	private static final int DAYS_COUNT_EXTRA = DAYS_COUNT + 7;
@@ -21,6 +25,9 @@ public class CalendarGridView extends ViewGroup {
 	private int firstDayOfMonthWeekIndex;
 	private boolean showExtraRow;
 	private boolean showWeekends;
+
+	private OnDayClickListener onDayClickListener;
+	private OnDayLongClickListener onDayLongClickListener;
 
 	public CalendarGridView(Context context) {
 		super(context);
@@ -88,17 +95,40 @@ public class CalendarGridView extends ViewGroup {
 	}
 
 	@Override
-	public void setOnClickListener(OnClickListener l) {
-		for (int i = 0; i < DAYS_COUNT_EXTRA; i++) {
-			getChildAt(i).setOnClickListener(l);
+	public void onClick(View v) {
+		if (v instanceof CalendarCellView && onDayClickListener != null) {
+			CalendarCellView cellView = (CalendarCellView) v;
+			onDayClickListener.onClick(v, cellView.getDate());
 		}
 	}
 
 	@Override
-	public void setOnLongClickListener(OnLongClickListener l) {
-		for (int i = 0; i < DAYS_COUNT_EXTRA; i++) {
-			getChildAt(i).setOnLongClickListener(l);
+	public boolean onLongClick(View v) {
+		if (v instanceof CalendarCellView && onDayLongClickListener != null) {
+			CalendarCellView cellView = (CalendarCellView) v;
+			return onDayLongClickListener.onLongClick(v, cellView.getDate());
 		}
+		return false;
+	}
+
+	public void setOnDayClickListener(OnDayClickListener l) {
+		// If no listener was set before, we should set listener for each cells. Otherwise this is not necessary
+		if (onDayClickListener == null) {
+			for (int i = 0; i < DAYS_COUNT_EXTRA; i++) {
+				getChildAt(i).setOnClickListener(this);
+			}
+		}
+		onDayClickListener = l;
+	}
+
+	public void setOnDayLongClickListener(OnDayLongClickListener l) {
+		// If no listener was set before, we should set listener for each cells. Otherwise this is not necessary
+		if (onDayLongClickListener == null) {
+			for (int i = 0; i < DAYS_COUNT_EXTRA; i++) {
+				getChildAt(i).setOnLongClickListener(this);
+			}
+		}
+		onDayLongClickListener = l;
 	}
 
 	public int getFinalColumnCount() {
