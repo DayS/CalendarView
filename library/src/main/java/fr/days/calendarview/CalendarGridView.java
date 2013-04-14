@@ -1,13 +1,16 @@
 package fr.days.calendarview;
 
+import static android.view.View.MeasureSpec.EXACTLY;
+import static android.view.View.MeasureSpec.makeMeasureSpec;
+
 import org.joda.time.LocalDate;
 import org.joda.time.YearMonth;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.GridLayout;
+import android.view.ViewGroup;
 
-public class CalendarGridView extends GridLayout {
+public class CalendarGridView extends ViewGroup {
 
 	private static final int DAYS_COUNT = 35;
 	private static final int DAYS_COUNT_EXTRA = DAYS_COUNT + 7;
@@ -24,30 +27,52 @@ public class CalendarGridView extends GridLayout {
 	}
 
 	private void init() {
-		setColumnCount(7);
-		setRowCount(6);
-		createCellViews();
+		LogWrapper.trace("init()");
+
+		for (int dayIndex = 0; dayIndex < DAYS_COUNT_EXTRA; dayIndex++) {
+			addView(new CalendarCellView(getContext()));
+		}
 	}
 
 	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		LogWrapper.trace("CalendarView : onSizeChanged(%d, %d, %d, %d)", w, h, oldw, oldh);
+	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+		LogWrapper.trace("CalendarGridView : onMeasure(" + MeasureSpec.toString(widthMeasureSpec) + ", " + MeasureSpec.toString(heightMeasureSpec) + ")");
 
-		int cellWidth = (int) (getWidth() / getFinalColumnCount());
-		int cellHeight = (int) (getHeight() / getFinalRowCount());
+		int totalWidth = MeasureSpec.getSize(widthMeasureSpec);
+		int totalHeight = MeasureSpec.getSize(heightMeasureSpec);
+		final int cellWidthSpec = makeMeasureSpec(totalWidth / getFinalColumnCount(), EXACTLY);
+		final int cellHeightSpec = makeMeasureSpec(totalHeight / getFinalRowCount(), EXACTLY);
 
-		for (int i = 0; i < DAYS_COUNT_EXTRA; i++) {
-			CalendarCellView calendarCellView = (CalendarCellView) getChildAt(i);
-			android.view.ViewGroup.LayoutParams layoutParams = calendarCellView.getLayoutParams();
-			layoutParams.width = cellWidth;
-			layoutParams.height = cellHeight;
+		for (int i = 0, numChildren = getChildCount(); i < numChildren; i++) {
+			final View child = getChildAt(i);
+			if (child.getVisibility() == View.VISIBLE) {
+				if (showWeekends || (i % 7 < 5)) {
+					measureChild(child, cellWidthSpec, cellHeightSpec);
+				}
+			}
+		}
+		setMeasuredDimension(totalWidth, totalHeight);
+	}
 
-			if (!showExtraRow && i >= DAYS_COUNT) {
-				calendarCellView.setVisibility(GONE);
-			} else if (!showWeekends && i % 7 >= 5) {
-				calendarCellView.setVisibility(GONE);
-			} else {
-				calendarCellView.setVisibility(VISIBLE);
+	@Override
+	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+		LogWrapper.trace("CalendarGridView : onLayout(" + left + ", " + top + ", " + right + ", " + bottom + ")");
+
+		int daysInWeek = getFinalColumnCount();
+		int x = 0;
+		int y = 0;
+		for (int i = 0, numChildren = getChildCount(); i < numChildren; i++) {
+			final View child = getChildAt(i);
+			if (child.getVisibility() == View.VISIBLE) {
+				if (showWeekends || (i % 7 < 5)) {
+					child.layout(x * child.getMeasuredWidth(), y * child.getMeasuredHeight(), //
+							(x + 1) * child.getMeasuredWidth(), (y + 1) * child.getMeasuredHeight());
+
+					if (++x == daysInWeek) {
+						x = 0;
+						y++;
+					}
+				}
 			}
 		}
 	}
@@ -93,6 +118,10 @@ public class CalendarGridView extends GridLayout {
 		configureCells();
 	}
 
+	public boolean isShowWeekends() {
+		return showWeekends;
+	}
+
 	public void setShowWeekends(boolean showWeekends) {
 		this.showWeekends = showWeekends;
 		requestLayout();
@@ -123,22 +152,4 @@ public class CalendarGridView extends GridLayout {
 		}
 	}
 
-	private void createCellViews() {
-		if (getChildCount() > 0)
-			return;
-
-		int y = 0;
-		int x = 0;
-		for (int dayIndex = 0; dayIndex < DAYS_COUNT_EXTRA; dayIndex++) {
-			LayoutParams layoutParams = new LayoutParams(GridLayout.spec(y), GridLayout.spec(x));
-			CalendarCellView calendarCellView = new CalendarCellView(getContext());
-
-			addView(calendarCellView, layoutParams);
-
-			if (++x == getColumnCount()) {
-				y++;
-				x = 0;
-			}
-		}
-	}
 }
