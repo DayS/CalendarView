@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 
@@ -32,6 +33,16 @@ public class CalendarHeaderView extends View {
 
 	public CalendarHeaderView(Context context) {
 		super(context);
+		init();
+	}
+
+	public CalendarHeaderView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		init();
+	}
+
+	public CalendarHeaderView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs);
 		init();
 	}
 

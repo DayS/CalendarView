@@ -23,7 +23,7 @@ public class CalendarView extends LinearLayout {
 	}
 
 	public CalendarView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
+		super(context, attrs);
 		init();
 	}
 
@@ -46,7 +46,7 @@ public class CalendarView extends LinearLayout {
 	public void setOnLongClickListener(OnLongClickListener l) {
 		gridLayout.setOnLongClickListener(l);
 	}
-	
+
 	public YearMonth getCurrentMonth() {
 		return gridLayout.getCurrentMonth();
 	}

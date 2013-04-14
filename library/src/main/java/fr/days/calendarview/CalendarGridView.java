@@ -7,6 +7,7 @@ import org.joda.time.LocalDate;
 import org.joda.time.YearMonth;
 
 import android.content.Context;
+import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,6 +24,16 @@ public class CalendarGridView extends ViewGroup {
 
 	public CalendarGridView(Context context) {
 		super(context);
+		init();
+	}
+
+	public CalendarGridView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		init();
+	}
+
+	public CalendarGridView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs);
 		init();
 	}
 

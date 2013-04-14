@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Align;
 import android.graphics.Paint.Style;
+import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,6 +47,16 @@ public class CalendarCellView extends View implements OnTouchListener {
 
 	public CalendarCellView(Context context) {
 		super(context);
+		init();
+	}
+
+	public CalendarCellView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		init();
+	}
+
+	public CalendarCellView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs);
 		init();
 	}
 
