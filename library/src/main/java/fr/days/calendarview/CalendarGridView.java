@@ -55,11 +55,9 @@ public class CalendarGridView extends ViewGroup {
 		final int cellHeightSpec = makeMeasureSpec(totalHeight / getFinalRowCount(), EXACTLY);
 
 		for (int i = 0, numChildren = getChildCount(); i < numChildren; i++) {
-			final View child = getChildAt(i);
-			if (child.getVisibility() == View.VISIBLE) {
-				if (showWeekends || (i % 7 < 5)) {
-					measureChild(child, cellWidthSpec, cellHeightSpec);
-				}
+			final CalendarCellView child = (CalendarCellView) getChildAt(i);
+			if (showWeekends || !child.isWeekEnd()) {
+				measureChild(child, cellWidthSpec, cellHeightSpec);
 			}
 		}
 		setMeasuredDimension(totalWidth, totalHeight);
@@ -73,17 +71,18 @@ public class CalendarGridView extends ViewGroup {
 		int x = 0;
 		int y = 0;
 		for (int i = 0, numChildren = getChildCount(); i < numChildren; i++) {
-			final View child = getChildAt(i);
-			if (child.getVisibility() == View.VISIBLE) {
-				if (showWeekends || (i % 7 < 5)) {
-					child.layout(x * child.getMeasuredWidth(), y * child.getMeasuredHeight(), //
-							(x + 1) * child.getMeasuredWidth(), (y + 1) * child.getMeasuredHeight());
+			final CalendarCellView child = (CalendarCellView) getChildAt(i);
+			if (showWeekends || !child.isWeekEnd()) {
+				child.setVisibility(View.VISIBLE);
+				child.layout(x * child.getMeasuredWidth(), y * child.getMeasuredHeight(), //
+						(x + 1) * child.getMeasuredWidth(), (y + 1) * child.getMeasuredHeight());
 
-					if (++x == daysInWeek) {
-						x = 0;
-						y++;
-					}
+				if (++x == daysInWeek) {
+					x = 0;
+					y++;
 				}
+			} else {
+				child.setVisibility(View.GONE);
 			}
 		}
 	}

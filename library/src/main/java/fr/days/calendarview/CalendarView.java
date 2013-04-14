@@ -55,6 +55,10 @@ public class CalendarView extends LinearLayout {
 		gridLayout.setCurrentMonth(currentMonth);
 	}
 
+	public boolean isShowWeekend() {
+		return gridLayout.isShowWeekends();
+	}
+
 	public void setShowWeekend(boolean showWeekends) {
 		gridLayout.setShowWeekends(showWeekends);
 		headerView.setShowWeekends(showWeekends);

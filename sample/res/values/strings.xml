@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">CalendarView-Sample</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_show_weekends">Show week-ends</string>
     <string name="hello_world">Hello world!</string>
     <string name="previous">&lt;&lt;&lt;</string>
     <string name="next">>>></string>

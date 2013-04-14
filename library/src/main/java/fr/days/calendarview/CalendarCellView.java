@@ -42,6 +42,7 @@ public class CalendarCellView extends View implements OnTouchListener {
 
 	private YearMonth displayedMonth;
 	private LocalDate date;
+	private boolean isWeekend;
 	private boolean selected = false;
 	private boolean highlighted = false;
 
@@ -67,15 +68,6 @@ public class CalendarCellView extends View implements OnTouchListener {
 			textMargin = convertDpiToPixels(5);
 
 		setOnTouchListener(this);
-	}
-
-	public void setDate(YearMonth currentMonth, LocalDate localDate) {
-		this.displayedMonth = currentMonth;
-		this.date = localDate;
-	}
-
-	public boolean isWeekEnd() {
-		return date.getDayOfWeek() >= 6;
 	}
 
 	@Override
@@ -118,13 +110,23 @@ public class CalendarCellView extends View implements OnTouchListener {
 		return date;
 	}
 
+	public void setDate(YearMonth currentMonth, LocalDate localDate) {
+		this.displayedMonth = currentMonth;
+		this.date = localDate;
+		this.isWeekend = date.getDayOfWeek() > 5;
+	}
+
+	public boolean isWeekEnd() {
+		return isWeekend;
+	}
+
 	private void drawBackground(Canvas canvas) {
 		paint.setStyle(Style.FILL);
 		if (highlighted) {
 			paint.setColor(backgroundColorHighlightedDay);
 		} else if (date.equals(CURRENT_DATE)) {
 			paint.setColor(backgroundColorCurrentDay);
-		} else if (isWeekEnd()) {
+		} else if (isWeekend) {
 			paint.setColor(backgroundColorWeekEndDay);
 		} else if (selected) {
 			paint.setColor(backgroundColorSelectedDay);
