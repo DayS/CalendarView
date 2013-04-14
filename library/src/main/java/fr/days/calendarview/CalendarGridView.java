@@ -196,6 +196,7 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 		for (int i = 0; i < getChildCount(); i++) {
 			CalendarCellView calendarCellView = (CalendarCellView) getChildAt(i);
 			calendarCellView.setDate(currentMonth, firstDayOfView.plusDays(i));
+			calendarCellView.setSelected(false);
 			calendarCellView.invalidate();
 		}
 	}

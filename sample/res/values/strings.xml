@@ -3,8 +3,12 @@
 
     <string name="app_name">CalendarView-Sample</string>
     <string name="action_show_weekends">Show week-ends</string>
-    <string name="hello_world">Hello world!</string>
     <string name="previous">&lt;&lt;&lt;</string>
     <string name="next">>>></string>
+    <string name="dialog_select_dates_title">Select dates</string>
+    <string name="dialog_select_dates_message">Would you like to select dates between %1$s and %2$s ?</string>
+    <string name="dialog_select_dates_yes">Yes</string>
+    <string name="dialog_select_dates_no">No</string>
+    <string name="dialog_select_dates_cancel">Cancel</string>
 
 </resources>

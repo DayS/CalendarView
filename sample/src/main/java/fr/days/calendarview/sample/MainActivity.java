@@ -4,6 +4,10 @@ import org.joda.time.LocalDate;
 import org.joda.time.YearMonth;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
+import android.content.DialogInterface.OnDismissListener;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -41,6 +45,8 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 
 	private MenuItem actionShowWeekends;
 
+	private LocalDate startDate;
+
 	@AfterInject
 	void init() {
 		currentMonth = YearMonth.now();
@@ -70,12 +76,20 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 	@Override
 	public void onClick(View v, LocalDate date) {
 		LogWrapper.info("Click on date %s", date.toString());
+
+		if (startDate != null) {
+			if (startDate.getMonthOfYear() == currentMonth.getMonthOfYear() && date.getMonthOfYear() == currentMonth.getMonthOfYear()) {
+				showSelectDialog(date);
+			}
+		}
 	}
 
 	@Override
 	public boolean onLongClick(View v, LocalDate date) {
 		LogWrapper.info("Long click on date %s", date.toString());
-		return false;
+
+		startDate = date;
+		return true;
 	}
 
 	@Click
@@ -108,6 +122,53 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 			actionShowWeekends.setChecked(showWeekend);
 		}
 		calendarView.setShowWeekend(showWeekend);
+	}
+
+	private void showSelectDialog(LocalDate endDate) {
+		if (startDate.isAfter(endDate)) {
+			LocalDate tmp = startDate;
+			startDate = endDate;
+			endDate = tmp;
+		}
+		final LocalDate finalEndDate = endDate;
+
+		AlertDialog selectDialog = new AlertDialog.Builder(this) //
+				.setTitle(R.string.dialog_select_dates_title) //
+				.setMessage(getString(R.string.dialog_select_dates_message, startDate.toString(), endDate.toString())) //
+				.setPositiveButton(R.string.dialog_select_dates_yes, new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						selectDates(startDate, finalEndDate, true);
+						dialog.dismiss();
+					}
+				}) //
+				.setNeutralButton(R.string.dialog_select_dates_cancel, new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						dialog.cancel();
+					}
+				}) //
+				.setNegativeButton(R.string.dialog_select_dates_no, new OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						selectDates(startDate, finalEndDate, false);
+						dialog.cancel();
+					}
+				}) //
+				.create();
+
+		// Builder version was introduced in API 17
+		selectDialog.setOnDismissListener(new OnDismissListener() {
+			@Override
+			public void onDismiss(DialogInterface dialog) {
+				startDate = null;
+			}
+		});
+		selectDialog.show();
+	}
+
+	private void selectDates(LocalDate startDate, LocalDate endDate, boolean selected) {
+		calendarView.setSelectedDate(startDate, endDate, selected);
 	}
 
 }

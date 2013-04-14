@@ -129,10 +129,10 @@ public class CalendarCellView extends View implements OnTouchListener {
 			paint.setColor(backgroundColorHighlightedDay);
 		} else if (date.equals(CURRENT_DATE)) {
 			paint.setColor(backgroundColorCurrentDay);
-		} else if (isWeekend) {
-			paint.setColor(backgroundColorWeekEndDay);
 		} else if (selected) {
 			paint.setColor(backgroundColorSelectedDay);
+		} else if (isWeekend) {
+			paint.setColor(backgroundColorWeekEndDay);
 		} else {
 			paint.setColor(backgroundColorNormalDay);
 		}
