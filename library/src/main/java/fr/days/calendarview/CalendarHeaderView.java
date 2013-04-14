@@ -87,6 +87,9 @@ public class CalendarHeaderView extends View {
 	}
 
 	public void setShowWeekends(boolean showWeekends) {
+		if (this.showWeekends == showWeekends)
+			return;
+
 		this.showWeekends = showWeekends;
 		requestLayout();
 	}

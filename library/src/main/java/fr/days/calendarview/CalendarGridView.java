@@ -114,6 +114,11 @@ public class CalendarGridView extends ViewGroup {
 	}
 
 	public void setCurrentMonth(YearMonth currentMonth) {
+		if (currentMonth == null)
+			throw new IllegalArgumentException("currentMonth musn't be null");
+		if (currentMonth.equals(this.currentMonth))
+			return;
+
 		this.currentMonth = currentMonth;
 
 		LogWrapper.debug("set current month to %s", currentMonth.toString());
@@ -133,6 +138,9 @@ public class CalendarGridView extends ViewGroup {
 	}
 
 	public void setShowWeekends(boolean showWeekends) {
+		if (this.showWeekends == showWeekends)
+			return;
+
 		this.showWeekends = showWeekends;
 		requestLayout();
 	}
