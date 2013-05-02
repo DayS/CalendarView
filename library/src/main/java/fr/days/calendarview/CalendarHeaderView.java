@@ -54,7 +54,7 @@ public class CalendarHeaderView extends View {
 		Calendar date = Calendar.getInstance();
 		for (int i = 0; i < 7; i++) {
 			date.set(Calendar.DAY_OF_WEEK, i);
-			shortWeekdays[getDayOfWeekColumn(i)] = weekDateFormat.format(date.getTime());
+			shortWeekdays[getDayOfWeekColumn(i)] = weekDateFormat.format(date.getTime()).toUpperCase();
 		}
 
 		textSize = convertDpiToPixels(14);
