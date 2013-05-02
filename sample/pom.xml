@@ -17,12 +17,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<!-- Android support -->
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>support-v4</artifactId>
-		</dependency>
-
 		<!-- AndroidAnnotations -->
 		<dependency>
 			<groupId>com.googlecode.androidannotations</groupId>
