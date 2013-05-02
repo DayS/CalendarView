@@ -1,7 +1,6 @@
 package fr.days.calendarview;
 
-import org.joda.time.LocalDate;
-import org.joda.time.YearMonth;
+import java.util.Date;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -47,11 +46,11 @@ public class CalendarView extends LinearLayout {
 		gridLayout.setOnDayLongClickListener(l);
 	}
 
-	public YearMonth getCurrentMonth() {
+	public Month getCurrentMonth() {
 		return gridLayout.getCurrentMonth();
 	}
 
-	public void setCurrentMonth(YearMonth currentMonth) {
+	public void setCurrentMonth(Month currentMonth) {
 		gridLayout.setCurrentMonth(currentMonth);
 	}
 
@@ -64,7 +63,7 @@ public class CalendarView extends LinearLayout {
 		headerView.setShowWeekends(showWeekends);
 	}
 
-	public void setSelectedDate(LocalDate startDate, LocalDate endDate, boolean selected) {
+	public void setSelectedDate(Date startDate, Date endDate, boolean selected) {
 		gridLayout.setSelectedDate(startDate, endDate, selected);
 	}
 

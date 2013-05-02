@@ -28,12 +28,6 @@
 			<artifactId>androidannotations-api</artifactId>
 		</dependency>
 
-		<!-- Jodatime -->
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-		</dependency>
-
 		<!-- CalendarView -->
 		<dependency>
 			<groupId>fr.days.calendarview</groupId>

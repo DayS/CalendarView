@@ -1,6 +1,7 @@
 package fr.days.calendarview;
 
-import org.joda.time.LocalDate;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -28,6 +29,7 @@ public class CalendarHeaderView extends View {
 	private float bottomMargin;
 	private float rightMargin;
 
+	private int firstDayOfWeekToShow = Calendar.MONDAY;
 	private String[] shortWeekdays = new String[7];
 	private boolean showWeekends;
 
@@ -47,15 +49,26 @@ public class CalendarHeaderView extends View {
 	}
 
 	private void init() {
-		LocalDate now = LocalDate.now();
+		SimpleDateFormat weekDateFormat = new SimpleDateFormat("EEE");
+
+		Calendar date = Calendar.getInstance();
 		for (int i = 0; i < 7; i++) {
-			shortWeekdays[i] = now.withDayOfWeek(i + 1).dayOfWeek().getAsShortText().toUpperCase();
+			date.set(Calendar.DAY_OF_WEEK, i);
+			shortWeekdays[getDayOfWeekColumn(i)] = weekDateFormat.format(date.getTime());
 		}
 
 		textSize = convertDpiToPixels(14);
 		topMargin = convertDpiToPixels(3);
 		bottomMargin = convertDpiToPixels(3);
 		rightMargin = convertDpiToPixels(3);
+	}
+
+	// TODO: Refactor with CalendarGridView.getDayOfWeekColumn
+	protected int getDayOfWeekColumn(int dayOfWeek) {
+		int result = dayOfWeek - firstDayOfWeekToShow;
+		if (result < 0)
+			result += 7;
+		return result;
 	}
 
 	public void setTextSize(int textSize) {
@@ -71,8 +84,9 @@ public class CalendarHeaderView extends View {
 	}
 
 	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		LogWrapper.trace("CalendarHeaderView : onSizeChanged(%d, %d, %d, %d)", w, h, oldw, oldh);
+	public void layout(int l, int t, int r, int b) {
+		super.layout(l, t, r, b);
+		LogWrapper.trace("CalendarHeaderView : layout(%d, %d, %d, %d)", l, t, r, b);
 
 		width = getWidth();
 		height = getHeight();

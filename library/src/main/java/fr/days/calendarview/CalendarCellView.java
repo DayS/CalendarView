@@ -1,7 +1,6 @@
 package fr.days.calendarview;
 
-import org.joda.time.LocalDate;
-import org.joda.time.YearMonth;
+import java.util.Calendar;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -17,7 +16,7 @@ import android.view.View.OnTouchListener;
 
 public class CalendarCellView extends View implements OnTouchListener {
 
-	private static final LocalDate CURRENT_DATE = LocalDate.now();
+	private static final Calendar CURRENT_DATE = Calendar.getInstance();
 
 	private final Paint paint = new Paint();
 
@@ -40,8 +39,8 @@ public class CalendarCellView extends View implements OnTouchListener {
 	private int width;
 	private int height;
 
-	private YearMonth displayedMonth;
-	private LocalDate date;
+	private Month displayedMonth;
+	private Calendar date;
 	private boolean isWeekend;
 	private boolean selected = false;
 	private boolean highlighted = false;
@@ -109,14 +108,15 @@ public class CalendarCellView extends View implements OnTouchListener {
 		drawCellBorder(canvas);
 	}
 
-	public LocalDate getDate() {
+	public Calendar getDate() {
 		return date;
 	}
 
-	public void setDate(YearMonth currentMonth, LocalDate localDate) {
+	public void setDate(Month currentMonth, Calendar date) {
 		this.displayedMonth = currentMonth;
-		this.date = localDate;
-		this.isWeekend = date.getDayOfWeek() > 5;
+		this.date = date;
+		int dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
+		this.isWeekend = dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY;
 	}
 
 	public boolean isWeekEnd() {
@@ -150,7 +150,7 @@ public class CalendarCellView extends View implements OnTouchListener {
 		}
 		paint.setTextAlign(Align.RIGHT);
 		paint.setTextSize(textSize);
-		canvas.drawText(String.valueOf(date.getDayOfMonth()), width - textMargin, textSize + textMargin, paint);
+		canvas.drawText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)), width - textMargin, textSize + textMargin, paint);
 	}
 
 	private void drawOutOfMonthOverlay(Canvas canvas) {
@@ -171,7 +171,7 @@ public class CalendarCellView extends View implements OnTouchListener {
 	}
 
 	private boolean isOutOfMonth() {
-		return date.getMonthOfYear() != displayedMonth.getMonthOfYear();
+		return !displayedMonth.contains(date);
 	}
 
 	private float convertDpiToPixels(int dpi) {

@@ -22,12 +22,6 @@
 			<groupId>com.google.android</groupId>
 			<artifactId>support-v4</artifactId>
 		</dependency>
-		
-		<!-- Jodatime -->
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-		</dependency>
 	</dependencies>
 
 	<build>

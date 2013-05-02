@@ -1,11 +1,11 @@
 package fr.days.calendarview.listeners;
 
-import org.joda.time.LocalDate;
+import java.util.Date;
 
 import android.view.View;
 
 public interface OnDayClickListener {
 
-	void onClick(View v, LocalDate date);
+	void onClick(View v, Date date);
 
 }

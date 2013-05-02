@@ -1,7 +1,6 @@
 package fr.days.calendarview.sample;
 
-import org.joda.time.LocalDate;
-import org.joda.time.YearMonth;
+import java.util.Date;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -24,6 +23,7 @@ import com.googlecode.androidannotations.annotations.ViewById;
 
 import fr.days.calendarview.CalendarView;
 import fr.days.calendarview.LogWrapper;
+import fr.days.calendarview.Month;
 import fr.days.calendarview.listeners.OnDayClickListener;
 import fr.days.calendarview.listeners.OnDayLongClickListener;
 
@@ -41,15 +41,15 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 	boolean showWeekend = false;
 
 	@InstanceState
-	YearMonth currentMonth;
+	Month currentMonth;
 
 	private MenuItem actionShowWeekends;
 
-	private LocalDate startDate;
+	private Date startDate;
 
 	@AfterInject
 	void init() {
-		currentMonth = YearMonth.now();
+		currentMonth = new Month();
 	}
 
 	@AfterViews
@@ -74,18 +74,18 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 	}
 
 	@Override
-	public void onClick(View v, LocalDate date) {
+	public void onClick(View v, Date date) {
 		LogWrapper.info("Click on date %s", date.toString());
 
 		if (startDate != null) {
-			if (startDate.getMonthOfYear() == currentMonth.getMonthOfYear() && date.getMonthOfYear() == currentMonth.getMonthOfYear()) {
+			if (currentMonth.contains(startDate) && currentMonth.contains(date)) {
 				showSelectDialog(date);
 			}
 		}
 	}
 
 	@Override
-	public boolean onLongClick(View v, LocalDate date) {
+	public boolean onLongClick(View v, Date date) {
 		LogWrapper.info("Long click on date %s", date.toString());
 
 		startDate = date;
@@ -94,12 +94,12 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 
 	@Click
 	void previousButtonClicked() {
-		setCurrentMonth(calendarView.getCurrentMonth().minusMonths(1));
+		setCurrentMonth(calendarView.getCurrentMonth().previousMonth());
 	}
 
 	@Click
 	void nextButtonClicked() {
-		setCurrentMonth(calendarView.getCurrentMonth().plusMonths(1));
+		setCurrentMonth(calendarView.getCurrentMonth().nextMonth());
 	}
 
 	@OptionsItem
@@ -108,11 +108,11 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 		setShowWeekend(showWeekend);
 	}
 
-	private void setCurrentMonth(YearMonth currentMonth) {
+	private void setCurrentMonth(Month currentMonth) {
 		this.currentMonth = currentMonth;
 
 		calendarView.setCurrentMonth(currentMonth);
-		titleView.setText(currentMonth.monthOfYear().getAsText() + " " + currentMonth.getYear());
+		titleView.setText(currentMonth.getMonthName() + " " + currentMonth.getYear());
 	}
 
 	private void setShowWeekend(boolean showWeekend) {
@@ -124,13 +124,13 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 		calendarView.setShowWeekend(showWeekend);
 	}
 
-	private void showSelectDialog(LocalDate endDate) {
-		if (startDate.isAfter(endDate)) {
-			LocalDate tmp = startDate;
+	private void showSelectDialog(Date endDate) {
+		if (startDate.after(endDate)) {
+			Date tmp = startDate;
 			startDate = endDate;
 			endDate = tmp;
 		}
-		final LocalDate finalEndDate = endDate;
+		final Date finalEndDate = endDate;
 
 		AlertDialog selectDialog = new AlertDialog.Builder(this) //
 				.setTitle(R.string.dialog_select_dates_title) //
@@ -167,7 +167,7 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 		selectDialog.show();
 	}
 
-	private void selectDates(LocalDate startDate, LocalDate endDate, boolean selected) {
+	private void selectDates(Date startDate, Date endDate, boolean selected) {
 		calendarView.setSelectedDate(startDate, endDate, selected);
 	}
 

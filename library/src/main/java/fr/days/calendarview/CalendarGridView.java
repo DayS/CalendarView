@@ -3,8 +3,8 @@ package fr.days.calendarview;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
-import org.joda.time.LocalDate;
-import org.joda.time.YearMonth;
+import java.util.Calendar;
+import java.util.Date;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -20,9 +20,10 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 	private static final int DAYS_COUNT = 35;
 	private static final int DAYS_COUNT_EXTRA = DAYS_COUNT + 7;
 
-	private YearMonth currentMonth;
-	private LocalDate firstDayOfView;
-	private int firstDayOfMonthWeekIndex;
+	private Month currentMonth;
+	private Calendar firstDayOfView;
+	private int firstDayOfFirstWeek;
+	private int firstDayOfWeekToShow = Calendar.MONDAY;
 	private boolean showExtraRow;
 	private boolean showWeekends;
 
@@ -98,7 +99,7 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 	public void onClick(View v) {
 		if (v instanceof CalendarCellView && onDayClickListener != null) {
 			CalendarCellView cellView = (CalendarCellView) v;
-			onDayClickListener.onClick(v, cellView.getDate());
+			onDayClickListener.onClick(v, cellView.getDate().getTime());
 		}
 	}
 
@@ -106,7 +107,7 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 	public boolean onLongClick(View v) {
 		if (v instanceof CalendarCellView && onDayLongClickListener != null) {
 			CalendarCellView cellView = (CalendarCellView) v;
-			return onDayLongClickListener.onLongClick(v, cellView.getDate());
+			return onDayLongClickListener.onLongClick(v, cellView.getDate().getTime());
 		}
 		return false;
 	}
@@ -139,11 +140,11 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 		return showExtraRow ? 6 : 5;
 	}
 
-	public YearMonth getCurrentMonth() {
+	public Month getCurrentMonth() {
 		return currentMonth;
 	}
 
-	public void setCurrentMonth(YearMonth currentMonth) {
+	public void setCurrentMonth(Month currentMonth) {
 		if (currentMonth == null)
 			throw new IllegalArgumentException("currentMonth musn't be null");
 		if (currentMonth.equals(this.currentMonth))
@@ -153,14 +154,21 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 
 		LogWrapper.debug("set current month to %s", currentMonth.toString());
 
-		LocalDate firstDayOfMonth = currentMonth.toLocalDate(1);
-		firstDayOfMonthWeekIndex = firstDayOfMonth.getDayOfWeek();
-		firstDayOfView = firstDayOfMonth.minusDays(firstDayOfMonthWeekIndex - 1);
+		firstDayOfFirstWeek = currentMonth.getFirstDayOfFirstWeek();
+		firstDayOfView = currentMonth.getFirstDayOfMonth();
+		firstDayOfView.add(Calendar.DAY_OF_MONTH, -getDayOfWeekColumn(firstDayOfFirstWeek));
 
-		showExtraRow = firstDayOfMonth.dayOfMonth().getMaximumValue() + firstDayOfMonthWeekIndex - 1 > 35;
+		showExtraRow = currentMonth.getNumberOfDays() + getDayOfWeekColumn(firstDayOfFirstWeek) > 35;
 
 		requestLayout();
 		configureCells();
+	}
+
+	protected int getDayOfWeekColumn(int dayOfWeek) {
+		int result = dayOfWeek - firstDayOfWeekToShow;
+		if (result < 0)
+			result += 7;
+		return result;
 	}
 
 	public boolean isShowWeekends() {
@@ -175,27 +183,39 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 		requestLayout();
 	}
 
-	public void setSelectedDate(LocalDate startDate, LocalDate endDate, boolean selected) {
-		if (startDate.getMonthOfYear() != currentMonth.getMonthOfYear())
+	public void setSelectedDate(Date startDate, Date endDate, boolean selected) {
+		if (!currentMonth.contains(startDate))
 			throw new IllegalArgumentException();
-		if (endDate.getMonthOfYear() != currentMonth.getMonthOfYear())
+		if (!currentMonth.contains(endDate))
 			throw new IllegalArgumentException();
 
-		int startDay = startDate.getDayOfMonth();
-		int endDay = endDate.getDayOfMonth();
+		Calendar calendar = Calendar.getInstance();
+
+		calendar.setTime(startDate);
+		int startDay = calendar.get(Calendar.DAY_OF_MONTH);
+
+		calendar.setTime(endDate);
+		int endDay = calendar.get(Calendar.DAY_OF_MONTH);
 
 		for (int i = startDay; i <= endDay; i++) {
-			View cellView = getChildAt(i + firstDayOfMonthWeekIndex - 2);
+			View cellView = getChildAt(i + firstDayOfFirstWeek - 2);
 			cellView.setSelected(selected);
 		}
+	}
+
+	public void setFirstDayOfWeekToShow(int firstDayOfWeekToShow) {
+		this.firstDayOfWeekToShow = firstDayOfWeekToShow;
 	}
 
 	private void configureCells() {
 		LogWrapper.debug("CalendarView : resetWeeks");
 
 		for (int i = 0; i < getChildCount(); i++) {
+			Calendar cellDate = (Calendar) firstDayOfView.clone();
+			cellDate.add(Calendar.DAY_OF_MONTH, i);
+
 			CalendarCellView calendarCellView = (CalendarCellView) getChildAt(i);
-			calendarCellView.setDate(currentMonth, firstDayOfView.plusDays(i));
+			calendarCellView.setDate(currentMonth, cellDate);
 			calendarCellView.setSelected(false);
 			calendarCellView.invalidate();
 		}
