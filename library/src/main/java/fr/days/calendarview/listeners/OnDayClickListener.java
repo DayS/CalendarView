@@ -1,11 +1,10 @@
 package fr.days.calendarview.listeners;
 
-import java.util.Date;
-
 import android.view.View;
+import fr.days.calendarview.Day;
 
 public interface OnDayClickListener {
 
-	void onClick(View v, Date date);
+	void onClick(View v, Day day);
 
 }

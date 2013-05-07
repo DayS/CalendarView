@@ -1,7 +1,5 @@
 package fr.days.calendarview.sample;
 
-import java.util.Date;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -21,7 +19,9 @@ import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 
+import fr.days.calendarview.CalendarAdapter;
 import fr.days.calendarview.CalendarView;
+import fr.days.calendarview.Day;
 import fr.days.calendarview.LogWrapper;
 import fr.days.calendarview.Month;
 import fr.days.calendarview.listeners.OnDayClickListener;
@@ -43,19 +43,23 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 	@InstanceState
 	Month currentMonth;
 
+	private CalendarAdapter adapter;
+	
 	private MenuItem actionShowWeekends;
 
-	private Date startDate;
+	private Day startDate;
 
 	@AfterInject
 	void init() {
 		currentMonth = new Month();
+		adapter = new CalendarAdapter(this);
 	}
 
 	@AfterViews
 	void initViews() {
 		calendarView.setOnDayClickListener(this);
 		calendarView.setOnDayLongClickListener(this);
+		calendarView.setAdapter(adapter);
 	}
 
 	@Override
@@ -69,49 +73,49 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 	public boolean onCreateOptionsMenu(Menu menu) {
 		boolean result = super.onCreateOptionsMenu(menu);
 		actionShowWeekends = menu.findItem(R.id.action_show_weekends);
-		actionShowWeekends.setChecked(calendarView.isShowWeekend());
+		actionShowWeekends.setChecked(adapter.isShowWeekends());
 		return result;
 	}
 
 	@Override
-	public void onClick(View v, Date date) {
-		LogWrapper.info("Click on date %s", date.toString());
+	public void onClick(View v, Day day) {
+		LogWrapper.info("Click on date %s", day.toString());
 
 		if (startDate != null) {
-			if (currentMonth.contains(startDate) && currentMonth.contains(date)) {
-				showSelectDialog(date);
+			if (currentMonth.contains(startDate) && currentMonth.contains(day)) {
+				showSelectDialog(day);
 			}
 		}
 	}
 
 	@Override
-	public boolean onLongClick(View v, Date date) {
-		LogWrapper.info("Long click on date %s", date.toString());
+	public boolean onLongClick(View v, Day day) {
+		LogWrapper.info("Long click on date %s", day.toString());
 
-		startDate = date;
+		startDate = day;
 		return true;
 	}
 
 	@Click
 	void previousButtonClicked() {
-		setCurrentMonth(calendarView.getCurrentMonth().previousMonth());
+		setCurrentMonth(adapter.getCurrentMonth().previousMonth());
 	}
 
 	@Click
 	void nextButtonClicked() {
-		setCurrentMonth(calendarView.getCurrentMonth().nextMonth());
+		setCurrentMonth(adapter.getCurrentMonth().nextMonth());
 	}
 
 	@OptionsItem
 	void actionShowWeekends() {
-		boolean showWeekend = !calendarView.isShowWeekend();
+		boolean showWeekend = !adapter.isShowWeekends();
 		setShowWeekend(showWeekend);
 	}
 
 	private void setCurrentMonth(Month currentMonth) {
 		this.currentMonth = currentMonth;
 
-		calendarView.setCurrentMonth(currentMonth);
+		adapter.setCurrentMonth(currentMonth);
 		titleView.setText(currentMonth.getMonthName() + " " + currentMonth.getYear());
 	}
 
@@ -121,16 +125,16 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 		if (actionShowWeekends != null) {
 			actionShowWeekends.setChecked(showWeekend);
 		}
-		calendarView.setShowWeekend(showWeekend);
+		adapter.setShowWeekends(showWeekend);
 	}
 
-	private void showSelectDialog(Date endDate) {
-		if (startDate.after(endDate)) {
-			Date tmp = startDate;
+	private void showSelectDialog(Day endDate) {
+		if (startDate.isAfter(endDate)) {
+			Day tmp = startDate;
 			startDate = endDate;
 			endDate = tmp;
 		}
-		final Date finalEndDate = endDate;
+		final Day finalEndDate = endDate;
 
 		AlertDialog selectDialog = new AlertDialog.Builder(this) //
 				.setTitle(R.string.dialog_select_dates_title) //
@@ -167,8 +171,8 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 		selectDialog.show();
 	}
 
-	private void selectDates(Date startDate, Date endDate, boolean selected) {
-		calendarView.setSelectedDate(startDate, endDate, selected);
+	private void selectDates(Day startDate, Day endDate, boolean selected) {
+		adapter.setSelectedDate(startDate, endDate, selected);
 	}
 
 }

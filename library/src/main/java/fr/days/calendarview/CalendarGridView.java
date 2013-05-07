@@ -2,11 +2,8 @@ package fr.days.calendarview;
 
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
-
-import java.util.Calendar;
-import java.util.Date;
-
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,39 +14,74 @@ import fr.days.calendarview.listeners.OnDayLongClickListener;
 
 public class CalendarGridView extends ViewGroup implements OnClickListener, OnLongClickListener {
 
-	private static final int DAYS_COUNT = 35;
-	private static final int DAYS_COUNT_EXTRA = DAYS_COUNT + 7;
-
-	private Month currentMonth;
-	private Calendar firstDayOfView;
-	private int firstDayOfFirstWeek;
-	private int firstDayOfWeekToShow = Calendar.MONDAY;
-	private boolean showExtraRow;
-	private boolean showWeekends;
+	private CalendarAdapter adapter;
+	private DataSetObserver dataSetObserver;
 
 	private OnDayClickListener onDayClickListener;
 	private OnDayLongClickListener onDayLongClickListener;
 
 	public CalendarGridView(Context context) {
 		super(context);
-		init();
 	}
 
 	public CalendarGridView(Context context, AttributeSet attrs) {
 		super(context, attrs);
-		init();
 	}
 
 	public CalendarGridView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs);
-		init();
 	}
 
-	private void init() {
-		LogWrapper.trace("init()");
+	public void setAdapter(CalendarAdapter adapter) {
+		if (this.adapter != null && dataSetObserver != null)
+			this.adapter.unregisterDataSetObserver(dataSetObserver);
 
-		for (int dayIndex = 0; dayIndex < DAYS_COUNT_EXTRA; dayIndex++) {
-			addView(new CalendarCellView(getContext()));
+		if (adapter != null) {
+			this.adapter = adapter;
+
+			this.dataSetObserver = new AdapterDataSetObserver();
+			this.adapter.registerDataSetObserver(dataSetObserver);
+
+			requestLayout();
+		}
+	}
+
+	public CalendarAdapter getAdapter() {
+		return adapter;
+	}
+
+	class AdapterDataSetObserver extends DataSetObserver {
+		@Override
+		public void onChanged() {
+			int count = adapter.getCount();
+			LogWrapper.trace("CalendarGridView.onChanged : count = %d", count);
+
+			for (int i = 0; i < count; i++) {
+				View convertView = null;
+				if (i < getChildCount()) {
+					convertView = getChildAt(i);
+				}
+
+				View cellView = adapter.getView(i, convertView, CalendarGridView.this);
+				if (convertView == null) {
+					addView(cellView);
+				}
+			}
+
+			if (count > getChildCount()) {
+				LogWrapper.trace("CalendarGridView.onChanged : count (%d) > getChildCount (%d)", count, getChildCount());
+
+				for (int i = count; i < getChildCount(); i++) {
+					removeViewAt(i);
+				}
+			}
+
+			requestLayout();
+		}
+
+		@Override
+		public void onInvalidated() {
+			super.onInvalidated();
 		}
 	}
 
@@ -59,13 +91,16 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 
 		int totalWidth = MeasureSpec.getSize(widthMeasureSpec);
 		int totalHeight = MeasureSpec.getSize(heightMeasureSpec);
-		final int cellWidthSpec = makeMeasureSpec(totalWidth / getFinalColumnCount(), EXACTLY);
-		final int cellHeightSpec = makeMeasureSpec(totalHeight / getFinalRowCount(), EXACTLY);
+		final int cellWidthSpec = makeMeasureSpec(totalWidth / adapter.getFinalColumnCount(), EXACTLY);
+		final int cellHeightSpec = makeMeasureSpec(totalHeight / adapter.getFinalRowCount(), EXACTLY);
 
-		for (int i = 0, numChildren = getChildCount(); i < numChildren; i++) {
-			final CalendarCellView child = (CalendarCellView) getChildAt(i);
-			if (showWeekends || !child.isWeekEnd()) {
+		if (adapter != null) {
+			int childCount = getChildCount();
+			for (int i = 0; i < childCount; i++) {
+				final CalendarCellView child = (CalendarCellView) getChildAt(i);
+				// if (adapter.isShowWeekends() || !child.isWeekEnd()) {
 				measureChild(child, cellWidthSpec, cellHeightSpec);
+				// }
 			}
 		}
 		setMeasuredDimension(totalWidth, totalHeight);
@@ -75,23 +110,23 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 	protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
 		LogWrapper.trace("CalendarGridView : onLayout(" + left + ", " + top + ", " + right + ", " + bottom + ")");
 
-		int daysInWeek = getFinalColumnCount();
+		int daysInWeek = adapter.getFinalColumnCount();
 		int x = 0;
 		int y = 0;
 		for (int i = 0, numChildren = getChildCount(); i < numChildren; i++) {
 			final CalendarCellView child = (CalendarCellView) getChildAt(i);
-			if (showWeekends || !child.isWeekEnd()) {
-				child.setVisibility(View.VISIBLE);
-				child.layout(x * child.getMeasuredWidth(), y * child.getMeasuredHeight(), //
-						(x + 1) * child.getMeasuredWidth(), (y + 1) * child.getMeasuredHeight());
+			// if (adapter.isShowWeekends() || !child.isWeekEnd()) {
+			child.setVisibility(View.VISIBLE);
+			child.layout(x * child.getMeasuredWidth(), y * child.getMeasuredHeight(), //
+					(x + 1) * child.getMeasuredWidth(), (y + 1) * child.getMeasuredHeight());
 
-				if (++x == daysInWeek) {
-					x = 0;
-					y++;
-				}
-			} else {
-				child.setVisibility(View.GONE);
+			if (++x == daysInWeek) {
+				x = 0;
+				y++;
 			}
+			// } else {
+			// child.setVisibility(View.GONE);
+			// }
 		}
 	}
 
@@ -99,7 +134,7 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 	public void onClick(View v) {
 		if (v instanceof CalendarCellView && onDayClickListener != null) {
 			CalendarCellView cellView = (CalendarCellView) v;
-			onDayClickListener.onClick(v, cellView.getDate().getTime());
+			onDayClickListener.onClick(v, cellView.getDay());
 		}
 	}
 
@@ -107,7 +142,7 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 	public boolean onLongClick(View v) {
 		if (v instanceof CalendarCellView && onDayLongClickListener != null) {
 			CalendarCellView cellView = (CalendarCellView) v;
-			return onDayLongClickListener.onLongClick(v, cellView.getDate().getTime());
+			return onDayLongClickListener.onLongClick(v, cellView.getDay());
 		}
 		return false;
 	}
@@ -115,7 +150,7 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 	public void setOnDayClickListener(OnDayClickListener l) {
 		// If no listener was set before, we should set listener for each cells. Otherwise this is not necessary
 		if (onDayClickListener == null) {
-			for (int i = 0; i < DAYS_COUNT_EXTRA; i++) {
+			for (int i = 0; i < getChildCount(); i++) {
 				getChildAt(i).setOnClickListener(this);
 			}
 		}
@@ -125,100 +160,11 @@ public class CalendarGridView extends ViewGroup implements OnClickListener, OnLo
 	public void setOnDayLongClickListener(OnDayLongClickListener l) {
 		// If no listener was set before, we should set listener for each cells. Otherwise this is not necessary
 		if (onDayLongClickListener == null) {
-			for (int i = 0; i < DAYS_COUNT_EXTRA; i++) {
+			for (int i = 0; i < getChildCount(); i++) {
 				getChildAt(i).setOnLongClickListener(this);
 			}
 		}
 		onDayLongClickListener = l;
-	}
-
-	public int getFinalColumnCount() {
-		return showWeekends ? 7 : 5;
-	}
-
-	public int getFinalRowCount() {
-		return showExtraRow ? 6 : 5;
-	}
-
-	public Month getCurrentMonth() {
-		return currentMonth;
-	}
-
-	public void setCurrentMonth(Month currentMonth) {
-		if (currentMonth == null)
-			throw new IllegalArgumentException("currentMonth musn't be null");
-		if (currentMonth.equals(this.currentMonth))
-			return;
-
-		this.currentMonth = currentMonth;
-
-		LogWrapper.debug("set current month to %s", currentMonth.toString());
-
-		firstDayOfFirstWeek = currentMonth.getFirstDayOfFirstWeek();
-		firstDayOfView = currentMonth.getFirstDayOfMonth();
-		firstDayOfView.add(Calendar.DAY_OF_MONTH, -getDayOfWeekColumn(firstDayOfFirstWeek));
-
-		showExtraRow = currentMonth.getNumberOfDays() + getDayOfWeekColumn(firstDayOfFirstWeek) > 35;
-
-		requestLayout();
-		configureCells();
-	}
-
-	protected int getDayOfWeekColumn(int dayOfWeek) {
-		int result = dayOfWeek - firstDayOfWeekToShow;
-		if (result < 0)
-			result += 7;
-		return result;
-	}
-
-	public boolean isShowWeekends() {
-		return showWeekends;
-	}
-
-	public void setShowWeekends(boolean showWeekends) {
-		if (this.showWeekends == showWeekends)
-			return;
-
-		this.showWeekends = showWeekends;
-		requestLayout();
-	}
-
-	public void setSelectedDate(Date startDate, Date endDate, boolean selected) {
-		if (!currentMonth.contains(startDate))
-			throw new IllegalArgumentException();
-		if (!currentMonth.contains(endDate))
-			throw new IllegalArgumentException();
-
-		Calendar calendar = Calendar.getInstance();
-
-		calendar.setTime(startDate);
-		int startDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-		calendar.setTime(endDate);
-		int endDay = calendar.get(Calendar.DAY_OF_MONTH);
-
-		for (int i = startDay; i <= endDay; i++) {
-			View cellView = getChildAt(i + firstDayOfFirstWeek - 2);
-			cellView.setSelected(selected);
-		}
-	}
-
-	public void setFirstDayOfWeekToShow(int firstDayOfWeekToShow) {
-		this.firstDayOfWeekToShow = firstDayOfWeekToShow;
-	}
-
-	private void configureCells() {
-		LogWrapper.debug("CalendarView : resetWeeks");
-
-		for (int i = 0; i < getChildCount(); i++) {
-			Calendar cellDate = (Calendar) firstDayOfView.clone();
-			cellDate.add(Calendar.DAY_OF_MONTH, i);
-
-			CalendarCellView calendarCellView = (CalendarCellView) getChildAt(i);
-			calendarCellView.setDate(currentMonth, cellDate);
-			calendarCellView.setSelected(false);
-			calendarCellView.invalidate();
-		}
 	}
 
 }

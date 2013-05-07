@@ -40,7 +40,7 @@ public class CalendarCellView extends View implements OnTouchListener {
 	private int height;
 
 	private Month displayedMonth;
-	private Calendar date;
+	private Day date;
 	private boolean isWeekend;
 	private boolean selected = false;
 	private boolean highlighted = false;
@@ -108,15 +108,14 @@ public class CalendarCellView extends View implements OnTouchListener {
 		drawCellBorder(canvas);
 	}
 
-	public Calendar getDate() {
+	public Day getDay() {
 		return date;
 	}
 
-	public void setDate(Month currentMonth, Calendar date) {
+	public void setDate(Month currentMonth, Day day) {
 		this.displayedMonth = currentMonth;
-		this.date = date;
-		int dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
-		this.isWeekend = dayOfWeek == Calendar.SATURDAY || dayOfWeek == Calendar.SUNDAY;
+		this.date = day;
+		this.isWeekend = day.isWeekend();
 	}
 
 	public boolean isWeekEnd() {
@@ -150,7 +149,7 @@ public class CalendarCellView extends View implements OnTouchListener {
 		}
 		paint.setTextAlign(Align.RIGHT);
 		paint.setTextSize(textSize);
-		canvas.drawText(String.valueOf(date.get(Calendar.DAY_OF_MONTH)), width - textMargin, textSize + textMargin, paint);
+		canvas.drawText(String.valueOf(date.getDayOfMonth()), width - textMargin, textSize + textMargin, paint);
 	}
 
 	private void drawOutOfMonthOverlay(Canvas canvas) {

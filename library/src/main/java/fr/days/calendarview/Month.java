@@ -3,7 +3,6 @@ package fr.days.calendarview;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 /**
@@ -68,44 +67,32 @@ public class Month implements Serializable {
 	}
 
 	/**
-	 * Return the week day of the first week of this month.
+	 * Return the week day of the first day of first week in this month.
 	 * 
 	 * @return return a value between {@link Calendar#MONDAY} and {@link Calendar#SUNDAY}
 	 */
-	public int getFirstDayOfFirstWeek() {
+	public int getFirstWeekDayOfFirstWeek() {
 		return date.get(Calendar.DAY_OF_WEEK);
 	}
 
 	/**
 	 * Return the first day of this month.
 	 */
-	public Calendar getFirstDayOfMonth() {
+	public Day getFirstDayOfMonth() {
 		Calendar firstDate = (Calendar) date.clone();
 		firstDate.set(Calendar.DAY_OF_MONTH, 1);
-		return firstDate;
+		return new Day(firstDate);
 	}
 
 	/**
 	 * Check if the given date is on this month (ie: day is in the range of this month and the month is equals to this one)
 	 * 
-	 * @param date
+	 * @param day
 	 * @return <code>true</code> if the date is in this month, <code>false</code> elsewhere
 	 * @see Month#contains(Calendar)
 	 */
-	public boolean contains(Date date) {
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		return contains(cal);
-	}
-
-	/**
-	 * Check if the given date is on this month (ie: day is in the range of this month and the month is equals to this one)
-	 * 
-	 * @param date
-	 * @return <code>true</code> if the date is in this month, <code>false</code> elsewhere
-	 */
-	public boolean contains(Calendar date) {
-		return date.get(Calendar.YEAR) == this.date.get(Calendar.YEAR) && date.get(Calendar.MONTH) == this.date.get(Calendar.MONTH);
+	public boolean contains(Day day) {
+		return date.get(Calendar.YEAR) == day.getYear() && date.get(Calendar.MONTH) == day.getMonth();
 	}
 
 	/**

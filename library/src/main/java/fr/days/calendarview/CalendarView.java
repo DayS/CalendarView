@@ -1,7 +1,5 @@
 package fr.days.calendarview;
 
-import java.util.Date;
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
@@ -45,26 +43,9 @@ public class CalendarView extends LinearLayout {
 	public void setOnDayLongClickListener(OnDayLongClickListener l) {
 		gridLayout.setOnDayLongClickListener(l);
 	}
-
-	public Month getCurrentMonth() {
-		return gridLayout.getCurrentMonth();
-	}
-
-	public void setCurrentMonth(Month currentMonth) {
-		gridLayout.setCurrentMonth(currentMonth);
-	}
-
-	public boolean isShowWeekend() {
-		return gridLayout.isShowWeekends();
-	}
-
-	public void setShowWeekend(boolean showWeekends) {
-		gridLayout.setShowWeekends(showWeekends);
-		headerView.setShowWeekends(showWeekends);
-	}
-
-	public void setSelectedDate(Date startDate, Date endDate, boolean selected) {
-		gridLayout.setSelectedDate(startDate, endDate, selected);
+	
+	public void setAdapter(CalendarAdapter adapter) {
+		gridLayout.setAdapter(adapter);
 	}
 
 }
