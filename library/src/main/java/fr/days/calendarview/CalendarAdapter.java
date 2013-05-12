@@ -1,5 +1,6 @@
 package fr.days.calendarview;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import android.content.Context;
@@ -14,7 +15,10 @@ public class CalendarAdapter extends BaseAdapter {
 
 	private Context context;
 
-	private int firstDayOfWeekToShow = Calendar.MONDAY;
+	private SimpleDateFormat weekDateFormat = new SimpleDateFormat("EEE");
+	private String[] shortWeekdays = new String[7];
+
+	private int firstDayOfWeekToShow;
 	private boolean[] selectedCells = new boolean[DAYS_COUNT_EXTRA];
 
 	private Month currentMonth;
@@ -25,6 +29,8 @@ public class CalendarAdapter extends BaseAdapter {
 
 	public CalendarAdapter(Context context) {
 		this.context = context;
+		setCurrentMonth(new Month());
+		setFirstDayOfWeekToShow(Calendar.MONDAY);
 	}
 
 	@Override
@@ -57,7 +63,6 @@ public class CalendarAdapter extends BaseAdapter {
 
 		calendarCellView.setDate(currentMonth, getItem(position));
 		calendarCellView.setSelected(selectedCells[position]);
-		calendarCellView.invalidate();
 		return calendarCellView;
 	}
 
@@ -105,7 +110,24 @@ public class CalendarAdapter extends BaseAdapter {
 			return;
 
 		this.firstDayOfWeekToShow = firstDayOfWeekToShow;
+
+		// TODO: Move that in a better place
+		Calendar date = Calendar.getInstance();
+		for (int i = 0; i < 7; i++) {
+			date.set(Calendar.DAY_OF_WEEK, i);
+			shortWeekdays[getDayOfWeekColumn(i)] = weekDateFormat.format(date.getTime()).toUpperCase();
+		}
+
 		notifyDataSetChanged();
+	}
+
+	public String getShortWeekdays(int weekday) {
+		// TODO: Move that in a better place
+		return shortWeekdays[weekday];
+	}
+
+	public int getFirstDayOfWeekToShow() {
+		return firstDayOfWeekToShow;
 	}
 
 	public void setShowWeekends(boolean showWeekends) {
@@ -128,7 +150,7 @@ public class CalendarAdapter extends BaseAdapter {
 		return showExtraRow ? 6 : 5;
 	}
 
-	private int getDayOfWeekColumn(int dayOfWeek) {
+	protected int getDayOfWeekColumn(int dayOfWeek) {
 		int result = dayOfWeek - firstDayOfWeekToShow;
 		if (result < 0)
 			result += 7;
