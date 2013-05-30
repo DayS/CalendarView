@@ -1,7 +1,5 @@
 package fr.days.calendarview;
 
-import java.util.Calendar;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -16,7 +14,7 @@ import android.view.View.OnTouchListener;
 
 public class CalendarCellView extends View implements OnTouchListener {
 
-	private static final Calendar CURRENT_DATE = Calendar.getInstance();
+	private static final Day CURRENT_DAY = new Day();
 
 	private final Paint paint = new Paint();
 
@@ -126,7 +124,7 @@ public class CalendarCellView extends View implements OnTouchListener {
 		paint.setStyle(Style.FILL);
 		if (highlighted) {
 			paint.setColor(backgroundColorHighlightedDay);
-		} else if (date.equals(CURRENT_DATE)) {
+		} else if (date.equals(CURRENT_DAY)) {
 			paint.setColor(backgroundColorCurrentDay);
 		} else if (selected) {
 			paint.setColor(backgroundColorSelectedDay);

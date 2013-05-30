@@ -52,6 +52,34 @@ public class Day implements Serializable {
 		return SimpleDateFormat.getInstance().format(date.getTime());
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((date == null) ? 0 : date.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Day other = (Day) obj;
+
+		if (getYear() != other.getYear())
+			return false;
+		if (getMonth() != other.getMonth())
+			return false;
+		if (getDayOfMonth() != other.getDayOfMonth())
+			return false;
+
+		return true;
+	}
+
 	/**
 	 * Return a copy of this instance plus the given number of days
 	 * 
