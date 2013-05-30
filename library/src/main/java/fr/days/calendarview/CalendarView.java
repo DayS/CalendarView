@@ -74,28 +74,16 @@ public class CalendarView extends LinearLayout implements OnClickListener, OnLon
 	}
 
 	public void setOnDayClickListener(OnDayClickListener l) {
-		// If no listener was set before, we should set listener for each cells. Otherwise this is not necessary
-		if (onDayClickListener == null) {
-			for (int i = 0; i < getChildCount(); i++) {
-				getChildAt(i).setOnClickListener(this);
-			}
-		}
 		onDayClickListener = l;
 	}
 
 	public void setOnDayLongClickListener(OnDayLongClickListener l) {
-		// If no listener was set before, we should set listener for each cells. Otherwise this is not necessary
-		if (onDayLongClickListener == null) {
-			for (int i = 0; i < getChildCount(); i++) {
-				getChildAt(i).setOnLongClickListener(this);
-			}
-		}
 		onDayLongClickListener = l;
 	}
 
 	@Override
 	public void onClick(View v) {
-		if (v instanceof CalendarCellView && onDayClickListener != null) {
+		if (onDayClickListener != null && v instanceof CalendarCellView) {
 			CalendarCellView cellView = (CalendarCellView) v;
 			onDayClickListener.onClick(v, cellView.getDay());
 		}
@@ -103,7 +91,7 @@ public class CalendarView extends LinearLayout implements OnClickListener, OnLon
 
 	@Override
 	public boolean onLongClick(View v) {
-		if (v instanceof CalendarCellView && onDayLongClickListener != null) {
+		if (onDayLongClickListener != null && v instanceof CalendarCellView) {
 			CalendarCellView cellView = (CalendarCellView) v;
 			return onDayLongClickListener.onLongClick(v, cellView.getDay());
 		}
@@ -281,6 +269,8 @@ public class CalendarView extends LinearLayout implements OnClickListener, OnLon
 				View cellView = adapter.getView(i, convertView, gridLayout);
 				// If the cellView wasn't a recycled one, add it to the gridLayout. Elsewhere just invalide it's content
 				if (convertView == null) {
+					cellView.setOnClickListener(CalendarView.this);
+					cellView.setOnLongClickListener(CalendarView.this);
 					gridLayout.addView(cellView);
 				} else {
 					cellView.invalidate();

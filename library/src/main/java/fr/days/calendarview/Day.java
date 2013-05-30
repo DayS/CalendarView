@@ -1,12 +1,15 @@
 package fr.days.calendarview;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
 import java.util.Calendar;
+
 
 public class Day implements Serializable {
 
 	private static final long serialVersionUID = -3165059533607342767L;
+
+	private static final DateFormat DATE_FORMAT = DateFormat.getDateInstance();
 
 	public static final int[] FILTER_WEEKENDS = new int[] { Calendar.SUNDAY, Calendar.SATURDAY };
 
@@ -49,7 +52,7 @@ public class Day implements Serializable {
 
 	@Override
 	public String toString() {
-		return SimpleDateFormat.getInstance().format(date.getTime());
+		return DATE_FORMAT.format(date.getTime());
 	}
 
 	@Override
