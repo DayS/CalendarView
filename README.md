@@ -2,7 +2,7 @@
 
 This library is yet another calendar view for Android. It provide a widget to show a single month at a time, so the use with a ViewPager is much easier than showing a whole year in a ScrollView.
 
-![Screenshot](calendarView.png)
+![Screenshot](https://raw.github.com/DayS/CalendarView/master/calendarView.png)
 
 ## Download
 
