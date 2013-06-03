@@ -15,7 +15,7 @@ Then you could use the following maven dependency in your project :
 
 ```xml
 <dependency>
-	<groupId>fr.days.calendarview</groupId>
+	<groupId>fr.dvilleneuve.calendarview</groupId>
 	<artifactId>library</artifactId>
 	<version>(latest version)</version>
 	<type>apklib</type>
@@ -27,7 +27,7 @@ Then you could use the following maven dependency in your project :
 Include `CalendarView` in your layout XML as follows :
 
 ```xml
-<fr.days.calendarview.CalendarView
+<fr.dvilleneuve.calendarview.CalendarView
     android:id="@+id/calendarView"
    	android:layout_width="match_parent"
    	android:layout_height="match_parent" />
