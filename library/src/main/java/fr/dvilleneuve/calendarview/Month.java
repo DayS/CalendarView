@@ -1,4 +1,4 @@
-package fr.days.calendarview;
+package fr.dvilleneuve.calendarview;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;

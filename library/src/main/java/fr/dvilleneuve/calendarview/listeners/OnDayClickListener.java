@@ -1,7 +1,7 @@
-package fr.days.calendarview.listeners;
+package fr.dvilleneuve.calendarview.listeners;
 
 import android.view.View;
-import fr.days.calendarview.Day;
+import fr.dvilleneuve.calendarview.Day;
 
 public interface OnDayClickListener {
 

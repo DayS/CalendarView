@@ -1,4 +1,4 @@
-package fr.days.calendarview.sample;
+package fr.dvilleneuve.calendarview.sample;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -19,13 +19,13 @@ import com.googlecode.androidannotations.annotations.OptionsItem;
 import com.googlecode.androidannotations.annotations.OptionsMenu;
 import com.googlecode.androidannotations.annotations.ViewById;
 
-import fr.days.calendarview.CalendarAdapter;
-import fr.days.calendarview.CalendarView;
-import fr.days.calendarview.Day;
-import fr.days.calendarview.LogWrapper;
-import fr.days.calendarview.Month;
-import fr.days.calendarview.listeners.OnDayClickListener;
-import fr.days.calendarview.listeners.OnDayLongClickListener;
+import fr.dvilleneuve.calendarview.CalendarAdapter;
+import fr.dvilleneuve.calendarview.CalendarView;
+import fr.dvilleneuve.calendarview.Day;
+import fr.dvilleneuve.calendarview.LogWrapper;
+import fr.dvilleneuve.calendarview.Month;
+import fr.dvilleneuve.calendarview.listeners.OnDayClickListener;
+import fr.dvilleneuve.calendarview.listeners.OnDayLongClickListener;
 
 @OptionsMenu(R.menu.main)
 @EActivity(R.layout.activity_main)
@@ -44,7 +44,7 @@ public class MainActivity extends Activity implements OnDayClickListener, OnDayL
 	Month currentMonth;
 
 	private CalendarAdapter adapter;
-	
+
 	private MenuItem actionShowWeekends;
 
 	private Day startDate;

@@ -1,4 +1,4 @@
-package fr.days.calendarview;
+package fr.dvilleneuve.calendarview;
 
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
@@ -16,8 +16,8 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import fr.days.calendarview.listeners.OnDayClickListener;
-import fr.days.calendarview.listeners.OnDayLongClickListener;
+import fr.dvilleneuve.calendarview.listeners.OnDayClickListener;
+import fr.dvilleneuve.calendarview.listeners.OnDayLongClickListener;
 
 public class CalendarView extends LinearLayout implements OnClickListener, OnLongClickListener {
 

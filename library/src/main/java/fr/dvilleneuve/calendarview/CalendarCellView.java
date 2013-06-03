@@ -1,4 +1,4 @@
-package fr.days.calendarview;
+package fr.dvilleneuve.calendarview;
 
 import android.content.Context;
 import android.graphics.Canvas;

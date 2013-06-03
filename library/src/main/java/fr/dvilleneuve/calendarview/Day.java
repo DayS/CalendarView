@@ -1,9 +1,8 @@
-package fr.days.calendarview;
+package fr.dvilleneuve.calendarview;
 
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.Calendar;
-
 
 public class Day implements Serializable {
 
